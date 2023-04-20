@@ -16,11 +16,13 @@ const s = StyleSheet.create({
     width: '100%',
   },
   listItem: {
-    height: 70,
     justifyContent: 'center',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
+    backgroundColor: 'white',
+  },
+  listSeparator: {
+    height: 1,
+    backgroundColor: '#e5e5e5',
   },
 });
 
@@ -29,12 +31,10 @@ const MAX_OFFSET = 100;
 const App = () => {
   const scrollOffset = useSharedValue(0);
 
-  console.log('OFFSET: ', scrollOffset.value);
-
-  const animtedHeaderStyle = useAnimatedStyle(() => {
+  const animatedHeaderStyle = useAnimatedStyle(() => {
     const offset =
       scrollOffset.value > MAX_OFFSET ? MAX_OFFSET : scrollOffset.value;
-    const value = offset / 100; // to get value between 0 to 1
+    const value = offset / MAX_OFFSET; // to get value between 0 to 1
     const backgroundColor = interpolateColor(value, [0, 1], ['white', 'green']);
 
     return {
@@ -49,8 +49,8 @@ const App = () => {
   });
 
   const header = useMemo(
-    () => <Animated.View style={[s.header, animtedHeaderStyle]} />,
-    [animtedHeaderStyle],
+    () => <Animated.View style={[s.header, animatedHeaderStyle]} />,
+    [animatedHeaderStyle],
   );
 
   const items = useMemo(
@@ -67,9 +67,18 @@ const App = () => {
 
   const content = useMemo(
     () => (
-      <Animated.ScrollView onScroll={scrollHandler}>
-        {items}
-      </Animated.ScrollView>
+      <Animated.FlatList
+        onScroll={scrollHandler}
+        data={items}
+        ItemSeparatorComponent={() => <View style={s.listSeparator} />}
+        renderItem={({item}) => {
+          return (
+            <View style={s.listItem}>
+              <Text>{item}</Text>
+            </View>
+          );
+        }}
+      />
     ),
     [items, scrollHandler],
   );
