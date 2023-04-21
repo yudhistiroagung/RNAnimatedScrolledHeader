@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TextInput} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -14,6 +14,21 @@ const s = StyleSheet.create({
   header: {
     height: 60,
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomColor: '#e5e5e5',
+    borderBottomWidth: 1,
+  },
+  searchBar: {
+    marginHorizontal: 16,
+    borderRadius: 24,
+    backgroundColor: 'white',
+    height: 32,
+    flex: 1,
+    borderWidth: 1,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    borderColor: '#e5e5e5',
   },
   listItem: {
     justifyContent: 'center',
@@ -35,7 +50,7 @@ const App = () => {
     const offset =
       scrollOffset.value > MAX_OFFSET ? MAX_OFFSET : scrollOffset.value;
     const value = offset / MAX_OFFSET; // to get value between 0 to 1
-    const backgroundColor = interpolateColor(value, [0, 1], ['white', 'green']);
+    const backgroundColor = interpolateColor(value, [0, 1], ['green', 'white']);
 
     return {
       backgroundColor,
@@ -49,7 +64,15 @@ const App = () => {
   });
 
   const header = useMemo(
-    () => <Animated.View style={[s.header, animatedHeaderStyle]} />,
+    () => (
+      <Animated.View style={[s.header, animatedHeaderStyle]}>
+        <TextInput
+          style={s.searchBar}
+          underlineColorAndroid={undefined}
+          placeholder="Search"
+        />
+      </Animated.View>
+    ),
     [animatedHeaderStyle],
   );
 
